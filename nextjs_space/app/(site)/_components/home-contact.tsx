@@ -14,8 +14,8 @@ export function HomeContact() {
             Agende sua <span className="text-[hsl(43,70%,55%)]">consulta</span>
           </h2>
           <p className="mt-4 mx-auto max-w-xl text-white/70">
-            Entre em contato conosco e dÃª o primeiro passo para um sorriso mais saudÃ¡vel.
-            Estamos prontos para atender vocÃª.
+            Entre em contato conosco e dê o primeiro passo para um sorriso mais saudável.
+            Estamos prontos para atender você.
           </p>
 
           <div className="mt-8 flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
@@ -35,7 +35,7 @@ export function HomeContact() {
 
           <div className="mt-8 flex items-center justify-center gap-2 text-sm text-white/60">
             <MapPin className="h-4 w-4" />
-            <span>Rua Bom Jesus de Pirapora, 127 - SÃ£o Bernardo do Campo, SP</span>
+            <span>Rua Bom Jesus de Pirapora, 127 - São Bernardo do Campo, SP</span>
           </div>
         </FadeIn>
       </div>

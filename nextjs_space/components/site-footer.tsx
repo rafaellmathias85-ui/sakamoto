@@ -17,7 +17,7 @@ export function SiteFooter() {
               </span>
             </Link>
             <p className="text-sm text-muted-foreground leading-relaxed">
-              ClÃ­nica OdontolÃ³gica com qualidade assegurada. Cuidando do seu sorriso com excelÃªncia e dedicaÃ§Ã£o hÃ¡ anos em SÃ£o Bernardo do Campo.
+              Clínica Odontológica com qualidade assegurada. Cuidando do seu sorriso com excelência e dedicação há anos em São Bernardo do Campo.
             </p>
           </div>
 
@@ -30,7 +30,7 @@ export function SiteFooter() {
               </div>
               <div className="flex items-start gap-2">
                 <MapPin className="h-4 w-4 mt-0.5 text-gold shrink-0" />
-                <span>Rua Bom Jesus de Pirapora, 127<br />SÃ£o Bernardo do Campo, SP</span>
+                <span>Rua Bom Jesus de Pirapora, 127<br />São Bernardo do Campo, SP</span>
               </div>
               <div className="flex items-start gap-2">
                 <Clock className="h-4 w-4 mt-0.5 text-gold shrink-0" />
@@ -40,10 +40,10 @@ export function SiteFooter() {
           </div>
 
           <div>
-            <h3 className="font-display font-semibold mb-4">Links RÃ¡pidos</h3>
+            <h3 className="font-display font-semibold mb-4">Links Rápidos</h3>
             <nav className="flex flex-col gap-2 text-sm text-muted-foreground">
-              <Link href="/servicos" className="hover:text-foreground transition-colors">Nossos ServiÃ§os</Link>
-              <Link href="/sobre" className="hover:text-foreground transition-colors">Sobre a ClÃ­nica</Link>
+              <Link href="/servicos" className="hover:text-foreground transition-colors">Nossos Serviços</Link>
+              <Link href="/sobre" className="hover:text-foreground transition-colors">Sobre a Clínica</Link>
               <Link href="/contato" className="hover:text-foreground transition-colors">Agendar Consulta</Link>
               <Link href="https://www.facebook.com/odontossakamoto/" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 hover:text-foreground transition-colors">
                 <Facebook className="h-4 w-4" />
@@ -54,7 +54,7 @@ export function SiteFooter() {
         </div>
 
         <div className="mt-10 border-t border-border pt-6 text-center text-xs text-muted-foreground">
-          Â© {new Date().getFullYear()} Odontologia Sakamoto. Todos os direitos reservados.
+          © {new Date().getFullYear()} Odontologia Sakamoto. Todos os direitos reservados.
         </div>
       </div>
     </footer>

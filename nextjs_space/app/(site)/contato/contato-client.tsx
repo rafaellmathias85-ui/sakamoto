@@ -10,16 +10,16 @@ import { Phone, MapPin, Clock, Calendar, Send, CheckCircle, Facebook } from 'luc
 import { toast } from 'sonner'
 
 const serviceOptions = [
-  'Implantes DentÃ¡rios',
+  'Implantes Dentários',
   'Ortodontia',
   'Clareamento Dental',
-  'Limpeza e PrevenÃ§Ã£o',
-  'RestauraÃ§Ãµes',
-  'PrÃ³teses DentÃ¡rias',
+  'Limpeza e Prevenção',
+  'Restaurações',
+  'Próteses Dentárias',
   'Endodontia',
   'Periodontia',
   'Odontopediatria',
-  'AvaliaÃ§Ã£o Geral',
+  'Avaliação Geral',
   'Outro',
 ]
 
@@ -43,20 +43,20 @@ export function ContatoPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e?.preventDefault?.()
     if (!form?.name || !form?.phone || !form?.email || !form?.service) {
-      toast?.error?.('Por favor, preencha todos os campos obrigatÃ³rios.')
+      toast?.error?.('Por favor, preencha todos os campos obrigatórios.')
       return
     }
     setLoading(true)
     try {
       const message = [
-        'OlÃ¡, gostaria de agendar uma consulta.',
+        'Olá, gostaria de agendar uma consulta.',
         '',
         `Nome: ${form.name}`,
         `Telefone: ${form.phone}`,
         `E-mail: ${form.email}`,
-        `ServiÃ§o: ${form.service}`,
+        `Serviço: ${form.service}`,
         form.preferredDate ? `Data preferida: ${form.preferredDate}` : '',
-        form.preferredTime ? `HorÃ¡rio preferido: ${form.preferredTime}` : '',
+        form.preferredTime ? `Horário preferido: ${form.preferredTime}` : '',
         form.message ? `Mensagem: ${form.message}` : '',
       ].filter(Boolean).join('\n')
 
@@ -84,7 +84,7 @@ export function ContatoPage() {
               Agende sua Consulta
             </h1>
             <p className="mt-4 mx-auto max-w-2xl text-white/70">
-              Preencha o formulÃ¡rio abaixo ou entre em contato por telefone. Estamos prontos para atender vocÃª.
+              Preencha o formulário abaixo ou entre em contato por telefone. Estamos prontos para atender você.
             </p>
           </FadeIn>
         </div>
@@ -98,7 +98,7 @@ export function ContatoPage() {
               <div className="rounded-lg bg-card p-6 md:p-8 shadow-sm">
                 <h2 className="font-display text-2xl font-bold mb-6 flex items-center gap-2">
                   <Calendar className="h-6 w-6 text-gold" />
-                  FormulÃ¡rio de Agendamento
+                  Formulário de Agendamento
                 </h2>
 
                 {success ? (
@@ -106,7 +106,7 @@ export function ContatoPage() {
                     <CheckCircle className="h-16 w-16 text-green-500 mx-auto mb-4" />
                     <h3 className="font-display text-xl font-bold mb-2">Agendamento Enviado!</h3>
                     <p className="text-muted-foreground mb-6">
-                      Finalize o envio pelo WhatsApp para que nossa equipe confirme o melhor horÃ¡rio.
+                      Finalize o envio pelo WhatsApp para que nossa equipe confirme o melhor horário.
                     </p>
                     <Button onClick={() => setSuccess(false)} variant="outline">
                       Fazer novo agendamento
@@ -153,7 +153,7 @@ export function ContatoPage() {
                     </div>
 
                     <div>
-                      <Label htmlFor="service">ServiÃ§o de interesse *</Label>
+                      <Label htmlFor="service">Serviço de interesse *</Label>
                       <select
                         id="service"
                         value={form?.service ?? ''}
@@ -161,7 +161,7 @@ export function ContatoPage() {
                         className="mt-1.5 flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                         required
                       >
-                        <option value="">Selecione um serviÃ§o</option>
+                        <option value="">Selecione um serviço</option>
                         {serviceOptions?.map((s: any) => (
                           <option key={s} value={s ?? ''}>{s ?? ''}</option>
                         ))}
@@ -180,7 +180,7 @@ export function ContatoPage() {
                         />
                       </div>
                       <div>
-                        <Label htmlFor="time">HorÃ¡rio preferido</Label>
+                        <Label htmlFor="time">Horário preferido</Label>
                         <Input
                           id="time"
                           type="time"
@@ -197,14 +197,14 @@ export function ContatoPage() {
                         id="message"
                         value={form?.message ?? ''}
                         onChange={(e: any) => updateField('message', e?.target?.value ?? '')}
-                        placeholder="ObservaÃ§Ãµes ou informaÃ§Ãµes adicionais..."
+                        placeholder="Observações ou informações adicionais..."
                         className="mt-1.5"
                         rows={4}
                       />
                     </div>
 
                     <p className="text-xs text-muted-foreground">
-                      Seus dados serÃ£o utilizados exclusivamente para o agendamento de consultas.
+                      Seus dados serão utilizados exclusivamente para o agendamento de consultas.
                     </p>
 
                     <Button
@@ -234,7 +234,7 @@ export function ContatoPage() {
             <SlideIn from="right" className="lg:col-span-2">
               <div className="space-y-6">
                 <div className="rounded-lg bg-card p-6 shadow-sm">
-                  <h3 className="font-display font-semibold text-lg mb-4">InformaÃ§Ãµes de Contato</h3>
+                  <h3 className="font-display font-semibold text-lg mb-4">Informações de Contato</h3>
                   <div className="space-y-4">
                     <div className="flex items-start gap-3">
                       <div className="rounded-full bg-gold/10 p-2">
@@ -256,10 +256,10 @@ export function ContatoPage() {
                         <MapPin className="h-5 w-5 text-gold" />
                       </div>
                       <div>
-                        <p className="font-medium text-sm">EndereÃ§o</p>
+                        <p className="font-medium text-sm">Endereço</p>
                         <p className="text-sm text-muted-foreground">
                           Rua Bom Jesus de Pirapora, 127<br />
-                          SÃ£o Bernardo do Campo, SP
+                          São Bernardo do Campo, SP
                         </p>
                       </div>
                     </div>
@@ -268,7 +268,7 @@ export function ContatoPage() {
                         <Clock className="h-5 w-5 text-gold" />
                       </div>
                       <div>
-                        <p className="font-medium text-sm">HorÃ¡rio</p>
+                        <p className="font-medium text-sm">Horário</p>
                         <p className="text-sm text-muted-foreground">
                           Ter-Sex: 8h às 21h<br />
                           Sáb: 9h às 13h
@@ -299,7 +299,7 @@ export function ContatoPage() {
                     allowFullScreen
                     loading="lazy"
                     referrerPolicy="no-referrer-when-downgrade"
-                    title="LocalizaÃ§Ã£o da Odontologia Sakamoto"
+                    title="Localização da Odontologia Sakamoto"
                   />
                 </div>
               </div>
