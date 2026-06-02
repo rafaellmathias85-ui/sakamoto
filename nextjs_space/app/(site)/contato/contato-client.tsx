@@ -60,7 +60,7 @@ export function ContatoPage() {
         form.message ? `Mensagem: ${form.message}` : '',
       ].filter(Boolean).join('\n')
 
-      window.open(`https://wa.me/551141237168?text=${encodeURIComponent(message)}`, '_blank', 'noopener,noreferrer')
+      window.open(`https://wa.me/5511992925353?text=${encodeURIComponent(message)}`, '_blank', 'noopener,noreferrer')
       setSuccess(true)
       toast?.success?.('Abrimos o WhatsApp para finalizar o agendamento.')
       setForm({ name: '', phone: '', email: '', service: '', preferredDate: '', preferredTime: '', message: '' })
@@ -242,8 +242,8 @@ export function ContatoPage() {
                       </div>
                       <div>
                         <p className="font-medium text-sm">Telefone</p>
-                        <a href="tel:+551141237168" className="text-sm text-muted-foreground hover:text-foreground">
-                          (11) 4123-7168
+                        <a href="tel:+5511992925353" className="text-sm text-muted-foreground hover:text-foreground">
+                          (11) 99292-5353
                         </a>
                       </div>
                     </div>

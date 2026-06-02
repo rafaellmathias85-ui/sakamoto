@@ -60,7 +60,7 @@ export function HomeHero() {
           <div className="mt-10 flex items-center gap-6 text-sm text-white/70">
             <div className="flex items-center gap-2">
               <Phone className="h-4 w-4 text-[hsl(43,70%,55%)]" />
-              <span>(11) 4123-7168</span>
+              <span>(11) 99292-5353</span>
             </div>
             <div className="h-4 w-px bg-white/20" />
             <span>Seg-Sex 8h às 18h</span>

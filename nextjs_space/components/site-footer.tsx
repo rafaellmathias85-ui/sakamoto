@@ -26,7 +26,7 @@ export function SiteFooter() {
             <div className="space-y-3 text-sm text-muted-foreground">
               <div className="flex items-start gap-2">
                 <Phone className="h-4 w-4 mt-0.5 text-gold shrink-0" />
-                <span>(11) 4123-7168</span>
+                <span>(11) 99292-5353</span>
               </div>
               <div className="flex items-start gap-2">
                 <MapPin className="h-4 w-4 mt-0.5 text-gold shrink-0" />

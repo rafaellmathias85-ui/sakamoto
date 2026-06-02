@@ -69,8 +69,8 @@ export function SobrePage() {
             <FadeIn>
               <div className="relative aspect-[4/3] overflow-hidden rounded-lg">
                 <Image
-                  src="https://cdn.abacus.ai/images/c19016dd-3da8-4026-ae66-39ca2a005f5a.png"
-                  alt="História da clínica Sakamoto"
+                  src="/images/fundadores-sakamoto.jpeg"
+                  alt="Donos e fundadores da Odontologia Sakamoto"
                   fill
                   className="object-cover"
                 />

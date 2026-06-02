@@ -25,10 +25,10 @@ export function HomeContact() {
                 Agendar Online
               </Button>
             </Link>
-            <a href="tel:+551141237168">
+            <a href="tel:+5511992925353">
               <Button size="lg" className="bg-white/15 text-white hover:bg-white/25 gap-2 w-full sm:w-auto border border-white/30">
                 <Phone className="h-5 w-5" />
-                (11) 4123-7168
+                (11) 99292-5353
               </Button>
             </a>
           </div>
