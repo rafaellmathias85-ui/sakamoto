@@ -95,6 +95,8 @@ jobs:
             DATABASE_URL=${{ secrets.DATABASE_URL }}
             EOF
 
+            npx --yes prisma db push --schema "$APP_DIR/prisma/schema.prisma"
+
             if command -v pm2 >/dev/null 2>&1; then
               PM2_CMD="pm2"
             else

@@ -1,11 +1,9 @@
 generator client {
     provider = "prisma-client-js"
-    binaryTargets = ["native", "linux-musl-arm64-openssl-3.0.x"]
-    output = "/home/ubuntu/odontologia_sakamoto/nextjs_space/node_modules/.prisma/client"
 }
 
 datasource db {
-    provider = "postgresql"
+    provider = "mysql"
     url      = env("DATABASE_URL")
 }
 
@@ -17,7 +15,7 @@ model Appointment {
   service       String
   preferredDate String
   preferredTime String
-  message       String?
+  message       String?  @db.Text
   status        String   @default("pending")
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
@@ -28,12 +26,12 @@ model Appointment {
 
 model BlogPost {
   id          String   @id @default(cuid())
-  title       String
-  slug        String   @unique
-  excerpt     String
-  content     String
+  title       String   @db.VarChar(255)
+  slug        String   @unique @db.VarChar(255)
+  excerpt     String   @db.Text
+  content     String   @db.LongText
   category    String
-  imageUrl    String
+  imageUrl    String   @db.VarChar(500)
   published   Boolean  @default(true)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
@@ -48,7 +46,7 @@ model ContactSubmission {
   email     String
   phone     String?
   subject   String?
-  message   String
+  message   String   @db.Text
   status    String   @default("new")
   formType  String   @default("contact")
   createdAt DateTime @default(now())
