@@ -8,19 +8,19 @@ const team = [
   {
     name: 'Dr. Luis Sakamoto',
     role: 'Cirurgião-Dentista | Implantodontia e Prótese',
-    img: 'https://cdn.abacus.ai/images/268ea16d-9dae-44fe-838b-2e4b8c750099.png',
+    img: '/images/dr-luis-real.jpg',
     bio: 'Fundador da clínica, o Dr. Luis Sakamoto é especialista em implantodontia e prótese dentária. Com décadas de experiência, dedica-se a reabilitar sorrisos com excelência e humanização.',
   },
   {
     name: 'Dra. Tania Sakamoto',
     role: 'Cirurgiã-Dentista | Estética e Clínica Geral',
-    img: 'https://cdn.abacus.ai/images/f46bde4f-c5b8-4fba-8cba-92b48adbc06e.png',
+    img: '/images/dra-tania-real.jpg',
     bio: 'Especialista em estética dental e clínica geral, a Dra. Tania é reconhecida pelo atendimento cuidadoso e resultados que transformam a autoestima dos pacientes.',
   },
   {
     name: 'Dra. Claudia',
     role: 'Cirurgiã-Dentista | Ortodontia e Odontopediatria',
-    img: 'https://cdn.abacus.ai/images/4d1223ae-0f71-4f7e-b96c-9f9c490e26ac.png',
+    img: '/images/dra-claudia-real.jpg',
     bio: 'A Dra. Claudia é apaixonada pelo cuidado infantil e pela ortodontia. Com abordagem lúdica e acolhedora, transforma a experiência no dentista em algo positivo para crianças e adultos.',
   },
 ]
