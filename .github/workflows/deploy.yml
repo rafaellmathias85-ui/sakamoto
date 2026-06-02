@@ -1,0 +1,100 @@
+name: Build and deploy
+
+on:
+  push:
+    branches:
+      - master
+      - main
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: nextjs_space
+    env:
+      NEXTAUTH_URL: https://odontosakamoto.com.br
+      NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET }}
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      ABACUSAI_API_KEY: ${{ secrets.ABACUSAI_API_KEY }}
+      WEB_APP_ID: ${{ secrets.WEB_APP_ID }}
+      NOTIF_ID_AGENDAMENTO_DE_CONSULTA: ${{ secrets.NOTIF_ID_AGENDAMENTO_DE_CONSULTA }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: nextjs_space/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci --legacy-peer-deps
+
+      - name: Generate Prisma client
+        run: npx prisma generate
+
+      - name: Build
+        run: npm run build
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main'
+    steps:
+      - name: Deploy on hosting by SSH
+        uses: appleboy/ssh-action@v1.0.3
+        env:
+          DEPLOY_PATH: ${{ vars.DEPLOY_PATH }}
+          TARGET_SHA: ${{ github.sha }}
+          NEXTAUTH_URL: https://odontosakamoto.com.br
+          NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET }}
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          ABACUSAI_API_KEY: ${{ secrets.ABACUSAI_API_KEY }}
+          WEB_APP_ID: ${{ secrets.WEB_APP_ID }}
+          NOTIF_ID_AGENDAMENTO_DE_CONSULTA: ${{ secrets.NOTIF_ID_AGENDAMENTO_DE_CONSULTA }}
+        with:
+          host: 148.251.86.214
+          username: odontosaka
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: ${{ vars.SSH_PORT || 22 }}
+          envs: DEPLOY_PATH,TARGET_SHA,NEXTAUTH_URL,NEXTAUTH_SECRET,DATABASE_URL,ABACUSAI_API_KEY,WEB_APP_ID,NOTIF_ID_AGENDAMENTO_DE_CONSULTA
+          script: |
+            set -e
+            APP_DIR="${DEPLOY_PATH:-/home/odontosaka/sakamoto}"
+
+            if [ ! -d "$APP_DIR/.git" ]; then
+              mkdir -p "$APP_DIR"
+              git clone https://github.com/rafaellmathias85-ui/sakamoto.git "$APP_DIR"
+            fi
+
+            cd "$APP_DIR"
+            git fetch origin
+            git reset --hard "$TARGET_SHA"
+
+            cd nextjs_space
+            cat > .env <<EOF
+            NODE_ENV=production
+            PORT=3000
+            NEXTAUTH_URL=$NEXTAUTH_URL
+            NEXTAUTH_SECRET=$NEXTAUTH_SECRET
+            DATABASE_URL=$DATABASE_URL
+            ABACUSAI_API_KEY=$ABACUSAI_API_KEY
+            WEB_APP_ID=$WEB_APP_ID
+            NOTIF_ID_AGENDAMENTO_DE_CONSULTA=$NOTIF_ID_AGENDAMENTO_DE_CONSULTA
+            EOF
+
+            npm ci --legacy-peer-deps
+            npx prisma generate
+            npx prisma migrate deploy
+            npm run build
+
+            if command -v pm2 >/dev/null 2>&1; then
+              pm2 restart odontologia-sakamoto || pm2 start npm --name odontologia-sakamoto -- start
+              pm2 save
+            else
+              echo "PM2 nao encontrado. Instale PM2 na hospedagem para manter o Next.js rodando."
+            fi
