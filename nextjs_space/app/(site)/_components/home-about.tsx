@@ -18,12 +18,12 @@ export function HomeAbout() {
       <div className="mx-auto max-w-[1200px] px-4 md:px-6">
         <div className="grid items-center gap-12 lg:grid-cols-2">
           <FadeIn>
-            <div className="relative aspect-[4/3] overflow-hidden rounded-lg">
+            <div className="relative aspect-[16/9] overflow-hidden rounded-lg bg-muted">
               <Image
                 src="/images/fundadores-sakamoto.jpeg"
                 alt="Donos e fundadores da Odontologia Sakamoto"
                 fill
-                className="object-cover"
+                className="object-contain"
               />
             </div>
           </FadeIn>
