@@ -12,108 +12,64 @@ concurrency:
 jobs:
   deploy:
     name: Build and deploy
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     environment: production
-    defaults:
-      run:
-        working-directory: nextjs_space
+    env:
+      DEPLOY_PATH: ${{ vars.DEPLOY_PATH || '/home/odontosaka/sakamoto' }}
+      NEXTAUTH_URL: https://odontosakamoto.com.br
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      PORT: "3000"
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: "20"
-          cache: "npm"
-          cache-dependency-path: nextjs_space/package-lock.json
+      - name: Sync files to app directory
+        run: |
+          set -e
+          mkdir -p "$DEPLOY_PATH"
+          rsync -az --delete \
+            --exclude '.git' \
+            --exclude 'nextjs_space/.env' \
+            --exclude 'nextjs_space/.next' \
+            --exclude 'nextjs_space/node_modules' \
+            ./ "$DEPLOY_PATH/"
+
+      - name: Write production environment
+        run: |
+          set -e
+          cat > "$DEPLOY_PATH/nextjs_space/.env" <<EOF
+          NODE_ENV=production
+          PORT=$PORT
+          NEXTAUTH_URL=$NEXTAUTH_URL
+          DATABASE_URL=$DATABASE_URL
+          EOF
 
       - name: Install dependencies
+        working-directory: ${{ env.DEPLOY_PATH }}/nextjs_space
         run: npm ci --legacy-peer-deps
 
-      - name: Generate Prisma client
-        env:
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
-        run: npx prisma generate
+      - name: Prepare database
+        working-directory: ${{ env.DEPLOY_PATH }}/nextjs_space
+        run: |
+          npx prisma generate
+          npx prisma db push
 
-      - name: Build
-        env:
-          NEXT_OUTPUT_MODE: standalone
-          NEXTAUTH_URL: https://odontosakamoto.com.br
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      - name: Build app
+        working-directory: ${{ env.DEPLOY_PATH }}/nextjs_space
         run: npm run build
 
-      - name: Package standalone app
+      - name: Restart app with PM2
+        working-directory: ${{ env.DEPLOY_PATH }}/nextjs_space
         run: |
-          rm -rf deploy ../odontologia-sakamoto.tar.gz
-          mkdir -p deploy/.next/static deploy/public deploy/prisma
-          cp -R .next/standalone/. deploy/
-          cp -R .next/static/. deploy/.next/static/
-          cp -R public/. deploy/public/
-          cp -R prisma/. deploy/prisma/
-          tar -czf ../odontologia-sakamoto.tar.gz -C deploy .
+          set -e
+          if command -v pm2 >/dev/null 2>&1; then
+            PM2_CMD="pm2"
+          else
+            npm install --prefix "$DEPLOY_PATH/.pm2-bin" pm2
+            PM2_CMD="$DEPLOY_PATH/.pm2-bin/node_modules/.bin/pm2"
+          fi
 
-      - name: Upload package to hosting
-        uses: appleboy/scp-action@v0.1.7
-        with:
-          host: 148.251.86.214
-          username: odontosaka
-          password: ${{ secrets.HOSTING_SSH_PASSWORD }}
-          port: ${{ secrets.HOSTING_SSH_PORT || 22 }}
-          source: "odontologia-sakamoto.tar.gz"
-          target: "/tmp"
-          overwrite: true
-
-      - name: Install and restart app
-        uses: appleboy/ssh-action@v1.2.0
-        with:
-          host: 148.251.86.214
-          username: odontosaka
-          password: ${{ secrets.HOSTING_SSH_PASSWORD }}
-          port: ${{ secrets.HOSTING_SSH_PORT || 22 }}
-          script: |
-            set -e
-
-            APP_DIR="${{ vars.DEPLOY_PATH || '/home/odontosaka/sakamoto' }}"
-            APP_NAME="odontologia-sakamoto"
-            APP_PORT="3000"
-            PACKAGE="/tmp/odontologia-sakamoto.tar.gz"
-
-            if ! command -v node >/dev/null 2>&1; then
-              echo "Node.js nao encontrado na hospedagem."
-              exit 1
-            fi
-
-            mkdir -p "$APP_DIR"
-            tar -xzf "$PACKAGE" -C "$APP_DIR"
-
-            cat > "$APP_DIR/.env" <<EOF
-            NODE_ENV=production
-            PORT=$APP_PORT
-            NEXTAUTH_URL=https://odontosakamoto.com.br
-            DATABASE_URL=${{ secrets.DATABASE_URL }}
-            EOF
-
-            npx --yes prisma db push --schema "$APP_DIR/prisma/schema.prisma"
-
-            if command -v pm2 >/dev/null 2>&1; then
-              PM2_CMD="pm2"
-            else
-              npm install --prefix "$APP_DIR/.pm2-bin" pm2
-              PM2_CMD="$APP_DIR/.pm2-bin/node_modules/.bin/pm2"
-            fi
-
-            cd "$APP_DIR"
-            SERVER_FILE="$APP_DIR/server.js"
-            if [ ! -f "$SERVER_FILE" ]; then
-              SERVER_FILE="$(find "$APP_DIR" -maxdepth 4 -name server.js | head -n 1)"
-            fi
-            if [ -z "$SERVER_FILE" ] || [ ! -f "$SERVER_FILE" ]; then
-              echo "server.js nao encontrado no pacote standalone."
-              exit 1
-            fi
-
-            PORT="$APP_PORT" "$PM2_CMD" restart "$APP_NAME" || PORT="$APP_PORT" "$PM2_CMD" start "$SERVER_FILE" --name "$APP_NAME"
-            "$PM2_CMD" save || true
-            "$PM2_CMD" status
+          PORT="$PORT" "$PM2_CMD" restart odontologia-sakamoto || PORT="$PORT" "$PM2_CMD" start npm --name odontologia-sakamoto -- start
+          "$PM2_CMD" save || true
+          "$PM2_CMD" status
