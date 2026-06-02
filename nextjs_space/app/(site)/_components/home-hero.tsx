@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import Image from 'next/image'
 import Link from 'next/link'
@@ -12,7 +12,7 @@ export function HomeHero() {
       <div className="absolute inset-0 z-0">
         <Image
           src="https://cdn.abacus.ai/images/bf610942-91c6-45d7-86b7-345673a5a221.png"
-          alt="Interior moderno da clínica Odontologia Sakamoto"
+          alt="Interior moderno da clÃ­nica Odontologia Sakamoto"
           fill
           className="object-cover opacity-20"
           priority
@@ -38,8 +38,8 @@ export function HomeHero() {
           </h1>
 
           <p className="mt-5 text-lg leading-relaxed text-white/80 md:text-xl">
-            Há anos cuidando da saúde bucal com excelência em São Bernardo do Campo.
-            Tecnologia de ponta e atendimento humanizado para toda a família.
+            HÃ¡ anos cuidando da saÃºde bucal com excelÃªncia em SÃ£o Bernardo do Campo.
+            Tecnologia de ponta e atendimento humanizado para toda a famÃ­lia.
           </p>
 
           <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:gap-4">
@@ -51,7 +51,7 @@ export function HomeHero() {
             </Link>
             <Link href="/servicos">
               <Button size="lg" className="w-full sm:w-auto bg-white/15 text-white hover:bg-white/25 gap-2 border border-white/30">
-                Nossos Serviços
+                Nossos ServiÃ§os
                 <ArrowRight className="h-4 w-4" />
               </Button>
             </Link>
@@ -60,10 +60,10 @@ export function HomeHero() {
           <div className="mt-10 flex items-center gap-6 text-sm text-white/70">
             <div className="flex items-center gap-2">
               <Phone className="h-4 w-4 text-[hsl(43,70%,55%)]" />
-              <span>(11) 99292-5353</span>
+              <span>(11) 4125-6639</span>
             </div>
             <div className="h-4 w-px bg-white/20" />
-            <span>Seg-Sex 8h às 18h</span>
+            <span>Ter-Sex 8h às 21h · Sáb 9h às 13h</span>
           </div>
         </motion.div>
       </div>

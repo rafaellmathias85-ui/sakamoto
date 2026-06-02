@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
@@ -14,8 +14,8 @@ export function HomeContact() {
             Agende sua <span className="text-[hsl(43,70%,55%)]">consulta</span>
           </h2>
           <p className="mt-4 mx-auto max-w-xl text-white/70">
-            Entre em contato conosco e dê o primeiro passo para um sorriso mais saudável.
-            Estamos prontos para atender você.
+            Entre em contato conosco e dÃª o primeiro passo para um sorriso mais saudÃ¡vel.
+            Estamos prontos para atender vocÃª.
           </p>
 
           <div className="mt-8 flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
@@ -25,17 +25,17 @@ export function HomeContact() {
                 Agendar Online
               </Button>
             </Link>
-            <a href="tel:+5511992925353">
+            <a href="tel:+551141256639">
               <Button size="lg" className="bg-white/15 text-white hover:bg-white/25 gap-2 w-full sm:w-auto border border-white/30">
                 <Phone className="h-5 w-5" />
-                (11) 99292-5353
+                (11) 4125-6639
               </Button>
             </a>
           </div>
 
           <div className="mt-8 flex items-center justify-center gap-2 text-sm text-white/60">
             <MapPin className="h-4 w-4" />
-            <span>Rua Bom Jesus de Pirapora, 127 - São Bernardo do Campo, SP</span>
+            <span>Rua Bom Jesus de Pirapora, 127 - SÃ£o Bernardo do Campo, SP</span>
           </div>
         </FadeIn>
       </div>
