@@ -1,0 +1,48 @@
+name: Deploy FTP static
+
+on:
+  push:
+    branches: ["main"]
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-ftp-static
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    name: Build static site and upload by FTP
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: nextjs_space
+    env:
+      NEXT_OUTPUT_MODE: export
+      NEXTAUTH_URL: https://odontosakamoto.com.br
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+          cache-dependency-path: nextjs_space/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci --legacy-peer-deps
+
+      - name: Build static site
+        run: npm run build
+
+      - name: Upload static site to FTP
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: 148.251.86.214
+          username: odontosaka
+          password: ${{ secrets.HOSTING_FTP_PASSWORD }}
+          port: 21
+          local-dir: nextjs_space/out/
+          server-dir: ${{ vars.FTP_SERVER_DIR || '/public_html/' }}

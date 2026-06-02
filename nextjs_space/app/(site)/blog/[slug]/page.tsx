@@ -1,17 +1,14 @@
-export const dynamic = 'force-dynamic'
-
-import { prisma } from '@/lib/db'
 import { notFound } from 'next/navigation'
 import { BlogPostClient } from './blog-post-client'
+import { getStaticBlogPost, staticBlogPosts } from '@/lib/static-blog'
+
+export function generateStaticParams() {
+  return staticBlogPosts.map((post) => ({ slug: post.slug }))
+}
 
 export async function generateMetadata({ params }: { params: { slug: string } }) {
   const slug = params?.slug ?? ''
-  let post: any = null
-  try {
-    post = await prisma.blogPost.findUnique({ where: { slug } })
-  } catch (e: any) {
-    console.error('Error:', e)
-  }
+  const post = getStaticBlogPost(slug)
 
   if (!post) return { title: 'Artigo não encontrado' }
 
@@ -23,20 +20,9 @@ export async function generateMetadata({ params }: { params: { slug: string } })
 
 export default async function BlogPostPage({ params }: { params: { slug: string } }) {
   const slug = params?.slug ?? ''
-  let post: any = null
-  try {
-    post = await prisma.blogPost.findUnique({ where: { slug } })
-  } catch (e: any) {
-    console.error('Error:', e)
-  }
+  const post = getStaticBlogPost(slug)
 
   if (!post) notFound()
 
-  const serialized = {
-    ...(post ?? {}),
-    createdAt: post?.createdAt?.toISOString?.() ?? '',
-    updatedAt: post?.updatedAt?.toISOString?.() ?? '',
-  }
-
-  return <BlogPostClient post={serialized} />
+  return <BlogPostClient post={post} />
 }

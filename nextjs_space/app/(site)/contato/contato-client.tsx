@@ -48,22 +48,25 @@ export function ContatoPage() {
     }
     setLoading(true)
     try {
-      const res = await fetch('/api/appointments', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(form),
-      })
-      const data = await res?.json?.()
-      if (data?.success) {
-        setSuccess(true)
-        toast?.success?.('Agendamento enviado com sucesso!')
-        setForm({ name: '', phone: '', email: '', service: '', preferredDate: '', preferredTime: '', message: '' })
-      } else {
-        toast?.error?.(data?.message ?? 'Erro ao enviar agendamento.')
-      }
+      const message = [
+        'Olá, gostaria de agendar uma consulta.',
+        '',
+        `Nome: ${form.name}`,
+        `Telefone: ${form.phone}`,
+        `E-mail: ${form.email}`,
+        `Serviço: ${form.service}`,
+        form.preferredDate ? `Data preferida: ${form.preferredDate}` : '',
+        form.preferredTime ? `Horário preferido: ${form.preferredTime}` : '',
+        form.message ? `Mensagem: ${form.message}` : '',
+      ].filter(Boolean).join('\n')
+
+      window.open(`https://wa.me/551141237168?text=${encodeURIComponent(message)}`, '_blank', 'noopener,noreferrer')
+      setSuccess(true)
+      toast?.success?.('Abrimos o WhatsApp para finalizar o agendamento.')
+      setForm({ name: '', phone: '', email: '', service: '', preferredDate: '', preferredTime: '', message: '' })
     } catch (err: any) {
       console.error('Submit error:', err)
-      toast?.error?.('Erro ao enviar. Tente novamente.')
+      toast?.error?.('Erro ao abrir WhatsApp. Tente novamente.')
     } finally {
       setLoading(false)
     }
@@ -103,7 +106,7 @@ export function ContatoPage() {
                     <CheckCircle className="h-16 w-16 text-green-500 mx-auto mb-4" />
                     <h3 className="font-display text-xl font-bold mb-2">Agendamento Enviado!</h3>
                     <p className="text-muted-foreground mb-6">
-                      Recebemos seu pedido de agendamento. Entraremos em contato em breve para confirmar.
+                      Finalize o envio pelo WhatsApp para que nossa equipe confirme o melhor horário.
                     </p>
                     <Button onClick={() => setSuccess(false)} variant="outline">
                       Fazer novo agendamento
@@ -213,12 +216,12 @@ export function ContatoPage() {
                       {loading ? (
                         <span className="flex items-center gap-2">
                           <span className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
-                          Enviando...
+                          Abrindo...
                         </span>
                       ) : (
                         <>
                           <Send className="h-4 w-4" />
-                          Enviar Agendamento
+                          Enviar pelo WhatsApp
                         </>
                       )}
                     </Button>

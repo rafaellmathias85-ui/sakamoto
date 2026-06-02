@@ -1,13 +1,8 @@
 import { MetadataRoute } from 'next'
-import { headers } from 'next/headers'
-import { prisma } from '@/lib/db'
-
-export const dynamic = 'force-dynamic'
+import { staticBlogPosts } from '@/lib/static-blog'
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const headersList = headers()
-  const host = headersList?.get?.('x-forwarded-host') ?? process.env.NEXTAUTH_URL ?? 'http://localhost:3000'
-  const siteUrl = host?.startsWith?.('http') ? host : `https://${host}`
+  const siteUrl = process.env.NEXTAUTH_URL ?? 'https://odontosakamoto.com.br'
 
   const staticPages = [
     { url: siteUrl, lastModified: new Date(), changeFrequency: 'weekly' as const, priority: 1 },
@@ -18,21 +13,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${siteUrl}/contato`, lastModified: new Date(), changeFrequency: 'monthly' as const, priority: 0.9 },
   ]
 
-  let blogPages: MetadataRoute.Sitemap = []
-  try {
-    const posts = await prisma.blogPost.findMany({
-      where: { published: true },
-      select: { slug: true, updatedAt: true },
-    })
-    blogPages = (posts ?? [])?.map((p: any) => ({
-      url: `${siteUrl}/blog/${p?.slug ?? ''}`,
-      lastModified: p?.updatedAt ?? new Date(),
-      changeFrequency: 'monthly' as const,
-      priority: 0.6,
-    }))
-  } catch (e: any) {
-    console.error('Sitemap error:', e)
-  }
+  const blogPages: MetadataRoute.Sitemap = staticBlogPosts.map((post) => ({
+    url: `${siteUrl}/blog/${post.slug}`,
+    lastModified: post.updatedAt,
+    changeFrequency: 'monthly' as const,
+    priority: 0.6,
+  }))
 
   return [...staticPages, ...blogPages]
 }
