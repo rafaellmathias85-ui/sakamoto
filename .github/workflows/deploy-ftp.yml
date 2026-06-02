@@ -42,7 +42,7 @@ jobs:
         with:
           server: 148.251.86.214
           username: odontosaka
-          password: ${{ secrets.HOSTING_FTP_PASSWORD }}
+          password: ${{ secrets.HOSTING_FTP_PASSWORD || secrets.HOSTING_SSH_PASSWORD }}
           port: 21
           local-dir: nextjs_space/out/
           server-dir: ${{ vars.FTP_SERVER_DIR || '/public_html/' }}
