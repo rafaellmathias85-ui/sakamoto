@@ -14,7 +14,7 @@ jobs:
     name: Build and deploy
     runs-on: ubuntu-latest
     environment: production
-    defaults:
+    defaults:h
       run:
         working-directory: nextjs_space
 
@@ -60,7 +60,7 @@ jobs:
           host: 148.251.86.214
           username: odontosaka
           password: ${{ secrets.HOSTING_SSH_PASSWORD }}
-          port: ${{ secrets.HOSTING_SSH_PORT || 22 }}
+          port: 21
           source: "odontologia-sakamoto.tar.gz"
           target: "/tmp"
           overwrite: true
@@ -71,7 +71,7 @@ jobs:
           host: 148.251.86.214
           username: odontosaka
           password: ${{ secrets.HOSTING_SSH_PASSWORD }}
-          port: ${{ secrets.HOSTING_SSH_PORT || 22 }}
+          port: 21
           script: |
             set -e
 
