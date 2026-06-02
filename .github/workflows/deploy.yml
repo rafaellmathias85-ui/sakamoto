@@ -15,11 +15,7 @@ jobs:
         working-directory: nextjs_space
     env:
       NEXTAUTH_URL: https://odontosakamoto.com.br
-      NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET }}
       DATABASE_URL: ${{ secrets.DATABASE_URL }}
-      ABACUSAI_API_KEY: ${{ secrets.ABACUSAI_API_KEY }}
-      WEB_APP_ID: ${{ secrets.WEB_APP_ID }}
-      NOTIF_ID_AGENDAMENTO_DE_CONSULTA: ${{ secrets.NOTIF_ID_AGENDAMENTO_DE_CONSULTA }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -47,11 +43,7 @@ jobs:
     env:
       DEPLOY_PATH: ${{ vars.DEPLOY_PATH || '/home/odontosaka/sakamoto' }}
       NEXTAUTH_URL: https://odontosakamoto.com.br
-      NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET }}
       DATABASE_URL: ${{ secrets.DATABASE_URL }}
-      ABACUSAI_API_KEY: ${{ secrets.ABACUSAI_API_KEY }}
-      WEB_APP_ID: ${{ secrets.WEB_APP_ID }}
-      NOTIF_ID_AGENDAMENTO_DE_CONSULTA: ${{ secrets.NOTIF_ID_AGENDAMENTO_DE_CONSULTA }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -72,11 +64,7 @@ jobs:
           NODE_ENV=production
           PORT=3000
           NEXTAUTH_URL=$NEXTAUTH_URL
-          NEXTAUTH_SECRET=$NEXTAUTH_SECRET
           DATABASE_URL=$DATABASE_URL
-          ABACUSAI_API_KEY=$ABACUSAI_API_KEY
-          WEB_APP_ID=$WEB_APP_ID
-          NOTIF_ID_AGENDAMENTO_DE_CONSULTA=$NOTIF_ID_AGENDAMENTO_DE_CONSULTA
           EOF
 
       - name: Install, build and restart app
