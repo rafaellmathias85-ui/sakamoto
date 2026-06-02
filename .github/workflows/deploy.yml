@@ -3,8 +3,8 @@ name: Build and deploy
 on:
   push:
     branches:
-      - master
       - main
+      - master
   workflow_dispatch:
 
 jobs:
@@ -43,58 +43,63 @@ jobs:
   deploy:
     needs: build
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main'
+    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
+    env:
+      DEPLOY_HOST: 148.251.86.214
+      DEPLOY_USER: odontosaka
+      DEPLOY_PATH: ${{ vars.DEPLOY_PATH || '/home/odontosaka/sakamoto' }}
+      SSH_PORT: ${{ vars.SSH_PORT || '22' }}
     steps:
-      - name: Deploy on hosting by SSH
-        uses: appleboy/ssh-action@v1.0.3
-        env:
-          DEPLOY_PATH: ${{ vars.DEPLOY_PATH }}
-          TARGET_SHA: ${{ github.sha }}
-          NEXTAUTH_URL: https://odontosakamoto.com.br
-          NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET }}
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
-          ABACUSAI_API_KEY: ${{ secrets.ABACUSAI_API_KEY }}
-          WEB_APP_ID: ${{ secrets.WEB_APP_ID }}
-          NOTIF_ID_AGENDAMENTO_DE_CONSULTA: ${{ secrets.NOTIF_ID_AGENDAMENTO_DE_CONSULTA }}
-        with:
-          host: 148.251.86.214
-          username: odontosaka
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          port: ${{ vars.SSH_PORT || 22 }}
-          envs: DEPLOY_PATH,TARGET_SHA,NEXTAUTH_URL,NEXTAUTH_SECRET,DATABASE_URL,ABACUSAI_API_KEY,WEB_APP_ID,NOTIF_ID_AGENDAMENTO_DE_CONSULTA
-          script: |
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configure SSH
+        run: |
+          mkdir -p ~/.ssh
+          chmod 700 ~/.ssh
+          printf '%s\n' "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          ssh-keyscan -p "$SSH_PORT" "$DEPLOY_HOST" >> ~/.ssh/known_hosts
+
+      - name: Sync files to hosting
+        run: |
+          ssh -i ~/.ssh/deploy_key -p "$SSH_PORT" "$DEPLOY_USER@$DEPLOY_HOST" "mkdir -p '$DEPLOY_PATH'"
+          rsync -az --delete \
+            --exclude '.git' \
+            --exclude 'nextjs_space/.env' \
+            --exclude 'nextjs_space/.next' \
+            --exclude 'nextjs_space/node_modules' \
+            -e "ssh -i ~/.ssh/deploy_key -p $SSH_PORT" \
+            ./ "$DEPLOY_USER@$DEPLOY_HOST:$DEPLOY_PATH/"
+
+      - name: Write production environment
+        run: |
+          cat > production.env <<EOF
+          NODE_ENV=production
+          PORT=3000
+          NEXTAUTH_URL=https://odontosakamoto.com.br
+          NEXTAUTH_SECRET=${{ secrets.NEXTAUTH_SECRET }}
+          DATABASE_URL=${{ secrets.DATABASE_URL }}
+          ABACUSAI_API_KEY=${{ secrets.ABACUSAI_API_KEY }}
+          WEB_APP_ID=${{ secrets.WEB_APP_ID }}
+          NOTIF_ID_AGENDAMENTO_DE_CONSULTA=${{ secrets.NOTIF_ID_AGENDAMENTO_DE_CONSULTA }}
+          EOF
+          scp -i ~/.ssh/deploy_key -P "$SSH_PORT" production.env "$DEPLOY_USER@$DEPLOY_HOST:$DEPLOY_PATH/nextjs_space/.env"
+
+      - name: Install, build and restart app
+        run: |
+          ssh -i ~/.ssh/deploy_key -p "$SSH_PORT" "$DEPLOY_USER@$DEPLOY_HOST" "
             set -e
-            APP_DIR="${DEPLOY_PATH:-/home/odontosaka/sakamoto}"
-
-            if [ ! -d "$APP_DIR/.git" ]; then
-              mkdir -p "$APP_DIR"
-              git clone https://github.com/rafaellmathias85-ui/sakamoto.git "$APP_DIR"
-            fi
-
-            cd "$APP_DIR"
-            git fetch origin
-            git reset --hard "$TARGET_SHA"
-
-            cd nextjs_space
-            cat > .env <<EOF
-            NODE_ENV=production
-            PORT=3000
-            NEXTAUTH_URL=$NEXTAUTH_URL
-            NEXTAUTH_SECRET=$NEXTAUTH_SECRET
-            DATABASE_URL=$DATABASE_URL
-            ABACUSAI_API_KEY=$ABACUSAI_API_KEY
-            WEB_APP_ID=$WEB_APP_ID
-            NOTIF_ID_AGENDAMENTO_DE_CONSULTA=$NOTIF_ID_AGENDAMENTO_DE_CONSULTA
-            EOF
-
+            cd '$DEPLOY_PATH/nextjs_space'
             npm ci --legacy-peer-deps
             npx prisma generate
             npx prisma migrate deploy
             npm run build
-
             if command -v pm2 >/dev/null 2>&1; then
-              pm2 restart odontologia-sakamoto || pm2 start npm --name odontologia-sakamoto -- start
+              pm2 restart odontologia-sakamoto || PORT=3000 pm2 start npm --name odontologia-sakamoto -- start
               pm2 save
             else
-              echo "PM2 nao encontrado. Instale PM2 na hospedagem para manter o Next.js rodando."
+              echo 'PM2 nao encontrado. Instale PM2 na hospedagem para manter o Next.js rodando.'
+              exit 1
             fi
+          "
