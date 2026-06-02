@@ -20,10 +20,10 @@ export function HomeAbout() {
           <FadeIn>
             <div className="relative aspect-[16/9] overflow-hidden rounded-lg bg-muted">
               <Image
-                src="/images/fundadores-sakamoto.jpeg"
+                src="/images/fundadores-sakamoto-foco.jpeg"
                 alt="Donos e fundadores da Odontologia Sakamoto"
                 fill
-                className="object-contain"
+                className="object-cover"
               />
             </div>
           </FadeIn>
