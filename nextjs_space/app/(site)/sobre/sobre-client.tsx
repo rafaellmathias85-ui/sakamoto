@@ -72,7 +72,7 @@ export function SobrePage() {
                   src="/images/fundadores-sakamoto.jpeg"
                   alt="Donos e fundadores da Odontologia Sakamoto"
                   fill
-                  className="object-contain"
+                  className="object-cover object-left"
                 />
               </div>
             </FadeIn>
